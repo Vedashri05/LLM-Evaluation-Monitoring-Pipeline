@@ -1,0 +1,1 @@
+Support is available by email from Monday to Friday, 9 AM to 6 PM UTC. Team plan customers receive priority email support with a first response within 4 hours. Enterprise customers have access to 24/7 phone support.

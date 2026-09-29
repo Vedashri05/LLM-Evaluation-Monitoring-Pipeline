@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+results/samples_latest.jsonl
+results/report.json
+results/report.md

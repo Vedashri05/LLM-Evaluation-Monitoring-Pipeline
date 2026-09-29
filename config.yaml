@@ -1,0 +1,52 @@
+# ─────────────────────────────────────────────────────────────
+# LLM Eval CI/CD – single source of truth.
+# Changing ANY of: this file, prompts/, knowledge_base/, app/,
+# or golden_dataset.jsonl triggers the CI evaluation.
+# ─────────────────────────────────────────────────────────────
+
+dataset_path: golden_dataset.jsonl
+prompt_path: prompts/system_prompt.txt
+results_dir: results
+baseline_path: baseline.json
+
+rag:
+  kb_dir: knowledge_base
+  chunk_words: 120
+  top_k: 3
+
+# System under test
+generation:
+  provider: mock              # mock | anthropic | openai   (mock = offline demo, no API key)
+  model: claude-haiku-4-5-20251001
+  max_tokens: 400
+  temperature: 0.0
+
+# Who grades the answers
+judge:
+  provider: heuristic         # heuristic | anthropic | openai
+  model: claude-haiku-4-5-20251001
+  faithfulness_cutoff: 0.70   # answer with faithfulness below this counts as hallucinated
+
+eval:
+  workers: 4                  # parallel requests (use 1 for cleanest latency numbers)
+
+# USD per 1M tokens. VERIFY against the provider's pricing page before trusting cost numbers.
+pricing:
+  claude-haiku-4-5-20251001: {input: 1.00, output: 5.00}
+  claude-sonnet-5-5:         {input: 3.00, output: 15.00}
+  gpt-4o-mini:               {input: 0.15, output: 0.60}
+
+# ── Merge gate: absolute limits (the "SLA") ──
+thresholds:
+  max_hallucination_rate: 0.05      # > 5%  -> block
+  min_faithfulness: 0.85
+  min_relevancy: 0.70
+  max_p95_latency_ms: 3000          # latency SLA
+  max_cost_per_query_usd: 0.01
+  max_error_rate: 0.0
+
+# ── Merge gate: regression vs baseline.json ──
+regression:
+  max_p95_latency_increase_pct: 20
+  max_hallucination_rate_increase: 0.02
+  max_relevancy_drop: 0.05

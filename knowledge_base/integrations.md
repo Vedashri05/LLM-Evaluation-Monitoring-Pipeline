@@ -1,0 +1,1 @@
+NimbusDesk integrates with Slack, Google Drive, and Jira. A public REST API is available on the Team and Enterprise plans. The API rate limit is 1000 requests per minute. The Starter plan does not include API access.
